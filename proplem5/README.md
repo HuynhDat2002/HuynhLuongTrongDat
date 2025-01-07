@@ -1,17 +1,17 @@
-<!-- Create volume for mysql -->
+Create volume for mysql
 
-sudo docker volume create db
+    sudo docker volume create db
 
 
-<!-- Build the system -->
-sudo docker compose up --build
-<!-- Down the system -->
-sudo docker compose down
+Build the system
+    sudo docker compose up --build
+Down the system
+    sudo docker compose down
 
 
 Note: Because this is just a CURD test, I don't build a sign-in interface of required sign-in.
 
-<!-- access to database (mysql) -->
+access to database (mysql)
     username:root
     password:99tech
     localhost:3305
