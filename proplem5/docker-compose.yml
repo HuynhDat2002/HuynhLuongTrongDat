@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+
+  
+  db-mysql:
+    image: mysql:8
+    container_name: mysql-server
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 99tech
+    ports:
+      - 3305:3306
+    networks:
+      - backend-network
+
+  redis-film:
+    image: redis:latest
+    container_name: redis-film
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis:/data
+    networks:
+      - backend-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    container_name: server-test
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=db-mysql
+      - DB_USER=root
+      - DB_PASSWORD=99tech
+      - DB_NAME=serverdb
+      - DATABASE_URL=mysql://root:99tech@db-mysql:3306/serverdb
+      - REDIS_HOST=redis-film
+      - REDIS_PORT=6379
+    depends_on:
+      - db-mysql
+      - redis-film
+    volumes:
+      - .:/app
+      - /app/server/node_modules
+    env_file:
+      - ./server/.env
+    expose:
+      - 5003
+    ports:
+      - 5003:5003
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge  
+
+volumes:
+  esdata:
+    driver: local
+  db:
+    external: true
+  redis:
+    driver: local
+
